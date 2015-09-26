@@ -2,10 +2,10 @@ var rows = 6;
 var columns = 7;
 
 
-QUnit.test( "gameBoardFromStrings", function( assert ) {
+QUnit.test( "parseGameBoard", function( assert ) {
 
     var alg = new Algorithm()
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '|P| | | | | | |',
         '|P| | | | | | |',
         '|O| | | | | | |',
@@ -29,7 +29,7 @@ QUnit.test( "getPlace", function( assert ) {
 
     var alg = new Algorithm()
     alg.player = 'P';
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '|P| | | | | | |',
         '|P| | | | | | |',
         '|O| | | | | | |',
@@ -52,7 +52,7 @@ QUnit.test( "isPlayerAt", function( assert ) {
 
     var alg = new Algorithm()
     alg.player = 'P';
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '|P| | | | | | |',
         '|P| | | | | | |',
         '|O| | | | | | |',
@@ -82,7 +82,7 @@ QUnit.test( "isPlayerAt", function( assert ) {
 QUnit.test( "victory vertical", function( assert ) {
     var alg = new Algorithm()
     alg.player = 'P';
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '|P| | | | | | |',
@@ -92,7 +92,7 @@ QUnit.test( "victory vertical", function( assert ) {
     ]);
     equal( alg.isVictory(true), true );
 
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '|O| | | | | | |',
@@ -102,7 +102,7 @@ QUnit.test( "victory vertical", function( assert ) {
     ]);
     equal( alg.isVictory(false), true );
 
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '|O| | | | | | |',
@@ -112,7 +112,7 @@ QUnit.test( "victory vertical", function( assert ) {
     ]);
     equal( alg.isVictory(true), false );
 
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | | | | | |',
@@ -127,7 +127,7 @@ QUnit.test( "victory vertical", function( assert ) {
 QUnit.test( "victory horizontal", function( assert ) {
     var alg = new Algorithm()
     alg.player = 'P';
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | | | | | |',
@@ -137,7 +137,7 @@ QUnit.test( "victory horizontal", function( assert ) {
     ]);
     equal( alg.isVictory(true), true );
 
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | | | | | |',
@@ -147,7 +147,7 @@ QUnit.test( "victory horizontal", function( assert ) {
     ]);
     equal( alg.isVictory(true), false );
 
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | | | | | |',
@@ -162,7 +162,7 @@ QUnit.test( "victory horizontal", function( assert ) {
 QUnit.test( "victory diagonal direita", function( assert ) {
     var alg = new Algorithm()
     alg.player = 'P';
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | |P| | | |',
@@ -172,7 +172,7 @@ QUnit.test( "victory diagonal direita", function( assert ) {
     ]);
     equal( alg.isVictory(true), true );
 
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | |O| | | |',
@@ -183,7 +183,7 @@ QUnit.test( "victory diagonal direita", function( assert ) {
     //alg.logGame();
     equal( alg.isVictory(true), false );
 
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | | | | | |',
@@ -198,7 +198,7 @@ QUnit.test( "victory diagonal direita", function( assert ) {
 QUnit.test( "victory diagonal esquerda", function( assert ) {
     var alg = new Algorithm()
     alg.player = 'P';
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | |P| | | |',
@@ -209,7 +209,7 @@ QUnit.test( "victory diagonal esquerda", function( assert ) {
     //alg.logGame();
     equal( alg.isVictory(true), true );
 
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | |O| | | |',
@@ -220,7 +220,7 @@ QUnit.test( "victory diagonal esquerda", function( assert ) {
     //alg.logGame();
     equal( alg.isVictory(true), false );
 
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | | | | | |',
@@ -235,7 +235,7 @@ QUnit.test( "victory diagonal esquerda", function( assert ) {
 QUnit.test( "do move", function( assert ) {
     var alg = new Algorithm()
     alg.player = 'P';
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | | | | | |',
@@ -253,7 +253,7 @@ QUnit.test( "do move", function( assert ) {
 QUnit.test( "available moves", function( assert ) {
     var alg = new Algorithm()
     alg.player = 'P';
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | | | | | |',
@@ -262,7 +262,7 @@ QUnit.test( "available moves", function( assert ) {
         '| | | | | | | |',
     ]);
     deepEqual( alg.getAvailableMoves(), [0, 1, 2, 3, 4, 5, 6] );
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '|P| | | | | | |',
         '|P| | | | | | |',
         '|P| | | | | | |',
@@ -277,7 +277,7 @@ QUnit.test( "available moves", function( assert ) {
 QUnit.test( "undo move", function( assert ) {
     var alg = new Algorithm()
     alg.player = 'P';
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | | | | | |',
@@ -297,7 +297,7 @@ QUnit.test( "undo move", function( assert ) {
 QUnit.test( "minmax 1", function( assert ) {
     var alg = new Algorithm()
     alg.player = 'P';
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | | | | | |',
@@ -309,9 +309,7 @@ QUnit.test( "minmax 1", function( assert ) {
     alg.logGame();
 
     var move = alg.move( alg.getAvailableMoves(), alg.gameBoard );
-    console.log('retornou algoritmo');
     alg.doMove(move, alg.player);
-    console.log('final');
     alg.logGame();
     equal( alg.getPlace(3,2), 'P' );
 });
@@ -320,7 +318,7 @@ QUnit.test( "minmax 1", function( assert ) {
 QUnit.test( "minmax 2", function( assert ) {
     var alg = new Algorithm()
     alg.player = 'P';
-    alg.gameBoard = alg.gameBoardFromStrings([
+    alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
         '| | | | | | | |',
         '| | | | | | | |',
@@ -332,9 +330,7 @@ QUnit.test( "minmax 2", function( assert ) {
     alg.logGame();
 
     var move = alg.move( alg.getAvailableMoves(), alg.gameBoard );
-    console.log('retornou algoritmo');
     alg.doMove(move, alg.player);
-    console.log('final');
     alg.logGame();
     equal( alg.getPlace(3,4), 'P' );
 });

@@ -47,8 +47,8 @@ function Algorithm() {
         this.otherPlayer = this.getOtherPlayer(this.player);
 
         if( this.otherPlayer ) {
-            //console.log("entrando alphaBeta");
-            var move = this.alphaBeta(this.getAvailableMoves(), true, maxLevel, 0, 0);
+            //cons ole.log("entrando minmaxWithAlphaBetaPruning");
+            var move = this.minmaxWithAlphaBetaPruning(this.getAvailableMoves(), true, maxLevel, 0, 0);
             return move.move;
         }
         else {
@@ -56,60 +56,14 @@ function Algorithm() {
         }
     };
 
-    this.alphaBeta = function(availableMoves, currentPlayer, level, min, max) {
-        console.log( "alphaBeta: level:"+level+" availableMoves:"+availableMoves + " min:"+min+' max:'+max );
-        this.logGame();
+    /**************************************************************************
+     * REGRAS DO JOGO
+     *************************************************************************/
 
-        if(availableMoves.length==0 || level<=0 || this.isVictory(currentPlayer) ) {
-            //console.log("returning current score");
-            return {score:this.gameScore(currentPlayer), move:null};
-        }
-        var best = {score:Number.NEGATIVE_INFINITY, move:null};
-        for( var i=0; i<availableMoves.length; i++ ) {
-            var currentMove = availableMoves[i];
-
-            if( best.score > min ) {
-                min = best.score;
-            }
-            this.doMove( currentMove, currentPlayer? this.player : this.otherPlayer );
-            var theMove = this.alphaBeta(this.getAvailableMoves(), !currentPlayer, level-1, -max, -min);
-            theMove = {score:-theMove.score, move:theMove.move};
-
-            this.undoMove( currentMove );
-
-            if(theMove.score > best.score) {
-                best.score = theMove.score;
-                best.move = currentMove;
-                console.log('Updating score:'+best.score+" best move:"+best.move);
-            }
-            if(best.score > max) {
-                console.log('break: max='+max+' score:'+best.score);
-                break
-            }
-        }
-        console.log('returning bestscore:'+best.score+" best move:"+best.move);
-        this.logGame();
-        return best
-    };
-
-    this.doMove = function(column, player) {
-        for(var r=rows-1; r>=0; r--) {
-            if( this.getPlace(column, r)==null ) {
-                this.setPlace(column, r, player);
-                return
-            }
-        }
-    };
-
-    this.undoMove = function(column) {
-        for(var r=0; r<rows; r++) {
-            if( this.getPlace(column, r)!=null ) {
-                this.setPlace(column, r, null);
-                return
-            }
-        }
-    };
-
+    /**
+     * Retorna a lista de movimentos possíveis (ou seja, os números das colunas
+     * que ainda possuem espaço para colocar peças).
+     */
     this.getAvailableMoves = function() {
         var moves = [];
         for(var c=0; c<columns; c++) {
@@ -120,37 +74,82 @@ function Algorithm() {
         return moves;
     };
 
-    this.getOtherPlayer = function(player) {
-        for( var r=0; r<rows; r++ ) {
-            for( var c=0; c<columns; c++) {
-                var place = this.getPlace(c, r);
-                if( place!=null && place!=player ) {
-                    return place;
-                }
+    /**
+     * Retorna true se houver o jogador especificadona coluna/linha indicados.
+     * Retorna false se não houver peça alguma ou houver o oponente na casa
+     * indicada. O jogador é especificado por um boleano indicando se o jogador
+     * a ser considerado é o informado em 'this.player' (true) ou o oponente
+     * (false).
+     */
+    this.isPlayerAt = function(column, row, currentPlayer) {
+        var place = this.getPlace(column, row);
+        //cons ole.log('isPlayerAt:'+column.toString()+row.toString()+'='+place+this.player+currentPlayer+((place==this.player)==currentPlayer));
+        return place!=null && (place==this.player)==currentPlayer;
+    };
+    
+    /**
+     * Retorna o jogador que está ocupando a linha/coluna indicados, ou null se 
+     * a casa estiver vazia
+     */
+    this.getPlace = function(column, row) {
+        return this.gameBoard[column][row];
+    };
+    
+    /**
+     * Preenche a linha/coluna indicados com o nome do jogador informado.
+     * Se player for null, remove qualquer peça da casa.
+     */
+    this.setPlace = function(column, row, player) {
+        this.gameBoard[column][row] = player;
+    };
+
+    /**
+     * Executa um movimento. Irá adicionar uma peça do jogador informado
+     * na coluna informada, na posição mais baixa e vaga possível.
+     */
+    this.doMove = function(column, player) {
+        for(var r=rows-1; r>=0; r--) {
+            if( this.getPlace(column, r)==null ) {
+                this.setPlace(column, r, player);
+                return
             }
         }
-        return null;
-    }
+    };
 
-    
+    /**
+     * Remove a peça mais ao topo da coluna informada.
+     *
+     * (Ok, as regras do jogo não permitem desfazer movimentos.
+     * Esse método é necessário para experimentar movimentos
+     * durante o processamento da jogada).
+     */
+    this.undoMove = function(column) {
+        for(var r=0; r<rows; r++) {
+            if( this.getPlace(column, r)!=null ) {
+                this.setPlace(column, r, null);
+                return
+            }
+        }
+    };
+
     /**
      * Retorna true se ha uma vitória para um jogador.
      * currentPlayer deve ser true se estou testando para
-     * o jogador de nome em player, false se for para
+     * o jogador especificado em 'this.player', false se for para
      * o oponente.
      */
     this.isVictory = function(currentPlayer) {
         var r, c;
         for( r=rows-1; r>=0; r-- ) {
             for( c=0; c<columns; c++ ) {
-                //console.log('checking '+c.toString()+r.toString()+ '='+ this.getPlace(c, r) + ': ' + (currentPlayer ? ' currentPlayer: ' : ' notCurrentPlayer: ')+(this.isPlayerAt(c, r, currentPlayer)) );
+                //cons ole.log('checking '+c.toString()+r.toString()+ '='+ this.getPlace(c, r) + ': ' + (currentPlayer ? ' currentPlayer: ' : ' notCurrentPlayer: ')+(this.isPlayerAt(c, r, currentPlayer)) );
 
                 if( this.isPlayerAt(c, r, currentPlayer) ) {
                     // vertical
                     var isWin = true;
                     var count;
                     for( count=0; count<4 && (r-count)>=0 && isWin; count++ ) {
-                        //console.log('wining '+c.toString()+r.toString()+'='+this.getPlace(c, r));
+                        //cons ole.log('wining '+c.toString()+r.toString()+'='+this.getPlace(c, r));
                         isWin = this.isPlayerAt(c, r-count, currentPlayer);
                     }
                     if( isWin && count==4 ) {
@@ -167,7 +166,7 @@ function Algorithm() {
                     // diagonal direita
                     isWin = true;
                     for( count=0; count<4 && (r-count)>=0 && (c+count)<columns && isWin; count++ ) {
-                        //console.log('wining '+(c+count).toString()+(r-count).toString()+'='+this.getPlace(c+count, r-count));
+                        //cons ole.log('wining '+(c+count).toString()+(r-count).toString()+'='+this.getPlace(c+count, r-count));
                         isWin = this.isPlayerAt(c+count, r-count, currentPlayer);
                     }
                     if( isWin && count==4 ) {
@@ -187,6 +186,152 @@ function Algorithm() {
         return false;
     };
 
+
+    /**************************************************************************
+     * METODOS AUXILIARES
+     *************************************************************************/
+
+    /**
+     * Retorna o nome do oponente da partida (aquele cujo nome
+     * é diferente do especificado em this.player). 
+     */
+    this.getOtherPlayer = function(player) {
+        for( var r=0; r<rows; r++ ) {
+            for( var c=0; c<columns; c++) {
+                var place = this.getPlace(c, r);
+                if( place!=null && place!=player ) {
+                    return place;
+                }
+            }
+        }
+        return null;
+    };
+
+    /**
+     * Imprime o gameBoard atual no console do navegador.
+     */
+    this.logGame = function() {
+        console.log( this.getGameBoardAsString() );
+    };
+
+    /**
+     * Retorna o gameboard atual em um formato string legivel.
+     * Nota: o nome do jogador corrente será substituido por 'P'
+     * (player) e oponente por 'O'. Isso facilita a leitura 
+     * durante o debugging.
+     */
+    this.getGameBoardAsString = function() {
+        var playerId = 'P';
+        var opponentId = 'O';
+        var rowsStrings = ['gameBoard'];
+        for( var r=0; r<rows; r++ ) {
+            var row = [];
+            for(var c=0; c<columns; c++ ) {
+                var place = this.getPlace(c, r);
+                if( place==this.player ) {
+                    row.push( playerId );
+                }
+                else if( place!=null ) {
+                    row.push( opponentId );
+                }
+                else row.push( ' ' );
+            }
+            rowsStrings.push( '|'+row.join('|')+'|' );
+        }
+        return rowsStrings.join('\n');
+    };
+
+    /**
+     * Faz o parsing da lista de strings em um gameboard.
+     *
+     * Usado para especificar os testes.
+     */
+    this.parseGameBoard = function(theRows) {
+        var c, r;
+        var gameBoard = [];
+        for(c=0; c<columns; c++) {
+            gameBoard.push([]);
+            for(r=0; r<rows; r++) {
+                gameBoard[c].push([]);
+            }
+        }
+        for(c=0; c<columns; c++) {
+            for(r=0; r<rows; r++) {
+                var pos = theRows[r].replace(/\|/g, "").charAt(c);
+                if( pos != ' ' ) {
+                    gameBoard[c][r] = pos;
+                }
+                else {
+                    gameBoard[c][r] = null;
+                }
+            }
+        }
+        return gameBoard;
+    };
+
+
+    /**************************************************************************
+     * ALGORITMO MINMAX
+     *************************************************************************/
+
+     /**
+      * The minmax algorithm with alpha-beta pruning.
+      *
+      * Details here: https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
+      */
+    this.minmaxWithAlphaBetaPruning = function(availableMoves, currentPlayer, level, min, max) {
+        //cons ole.log( "minmaxWithAlphaBetaPruning: level:"+level+" availableMoves:"+availableMoves + " min:"+min+' max:'+max );
+        this.logGame();
+
+        if(availableMoves.length==0 || level<=0 || this.isVictory(currentPlayer) ) {
+            //cons ole.log("returning current score");
+            return {score:this.gameScore(currentPlayer), move:null};
+        }
+        var best = {score:Number.NEGATIVE_INFINITY, move:null};
+        for( var i=0; i<availableMoves.length; i++ ) {
+            var currentMove = availableMoves[i];
+
+            if( best.score > min ) {
+                min = best.score;
+            }
+            this.doMove( currentMove, currentPlayer? this.player : this.otherPlayer );
+            var theMove = this.minmaxWithAlphaBetaPruning(this.getAvailableMoves(), !currentPlayer, level-1, -max, -min);
+            theMove = {score:-theMove.score, move:theMove.move};
+
+            this.undoMove( currentMove );
+
+            if(theMove.score > best.score) {
+                best.score = theMove.score;
+                best.move = currentMove;
+                //cons ole.log('Updating score:'+best.score+" best move:"+best.move);
+            }
+            if(best.score > max) {
+                //cons ole.log('break');
+                break
+            }
+        }
+        //cons ole.log('returning bestscore:'+best.score+" best move:"+best.move);
+        this.logGame();
+        return best
+    };
+
+    /**
+     * The function that computes the gamescore for the current gameboard
+     */
+    this.gameScore = function(currentPlayer) {
+        if( this.isVictory(currentPlayer) ) {
+            if( currentPlayer ) {
+                return 100;
+            }
+            else {
+                return 200;
+            }
+        }
+        else {
+            return this.getGameScore(currentPlayer);
+        }
+    };
+
     this.getGameScore = function(currentPlayer) {
         var score = 0;
         var r, c;
@@ -198,7 +343,7 @@ function Algorithm() {
                     var isWin = true;
                     var count;
                     for( count=0; count<4 && (r-count)>=0 && isWin; count++ ) {
-                        //console.log('wining '+c.toString()+r.toString()+'='+this.getPlace(c, r));
+                        //cons ole.log('wining '+c.toString()+r.toString()+'='+this.getPlace(c, r));
                         isWin = this.isPlayerAt(c, r-count, currentPlayer);
                     }
                     if( count==1 ) {
@@ -229,7 +374,7 @@ function Algorithm() {
                     // diagonal direita
                     isWin = true;
                     for( count=0; count<4 && (r-count)>=0 && (c+count)<columns && isWin; count++ ) {
-                        //console.log('wining '+(c+count).toString()+(r-count).toString()+'='+this.getPlace(c+count, r-count));
+                        //cons ole.log('wining '+(c+count).toString()+(r-count).toString()+'='+this.getPlace(c+count, r-count));
                         isWin = this.isPlayerAt(c+count, r-count, currentPlayer);
                     }
                     if( count==1 ) {
@@ -261,76 +406,4 @@ function Algorithm() {
         }
         return score;
     };
-
-    this.gameScore = function(currentPlayer) {
-        if( this.isVictory(currentPlayer) ) {
-            if( currentPlayer ) {
-                return 100;
-            }
-            else {
-                return 200;
-            }
-        }
-        else {
-            return this.getGameScore(currentPlayer);
-        }
-    };
-    
-    this.isPlayerAt = function(column, row, currentPlayer) {
-        var place = this.getPlace(column, row);
-        //console.log('isPlayerAt:'+column.toString()+row.toString()+'='+place+this.player+currentPlayer+((place==this.player)==currentPlayer));
-        return place!=null && (place==this.player)==currentPlayer;
-    };
-    
-    this.getPlace = function(column, row) {
-        return this.gameBoard[column][row];
-    };
-    
-    this.setPlace = function(column, row, player) {
-        this.gameBoard[column][row] = player;
-    };
-
-    this.logGame = function() {
-        var c, r;
-        var playerId = 'P';
-        var opponentId = 'O';
-        console.log('gameBoard');
-        for( r=0; r<rows; r++ ) {
-            var msg = [];
-                for( c=0; c<columns; c++ ) {
-                var place = this.getPlace(c, r);
-                if( place==this.player ) {
-                    msg.push( playerId );
-                }
-                else if( place!=null ) {
-                    msg.push( opponentId );
-                }
-                else msg.push( ' ' );
-            }
-            console.log((r).toString()+'|'+msg.join('|')+'|');
-        }
-    };
-
-    this.gameBoardFromStrings = function(theRows) {
-        var c, r;
-        var gameBoard = [];
-        for(c=0; c<columns; c++) {
-            gameBoard.push([]);
-            for(r=0; r<rows; r++) {
-                gameBoard[c].push([]);
-            }
-        }
-        for(c=0; c<columns; c++) {
-            for(r=0; r<rows; r++) {
-                var pos = theRows[r].replace(/\|/g, "").charAt(c);
-                if( pos != ' ' ) {
-                    gameBoard[c][r] = pos;
-                }
-                else {
-                    gameBoard[c][r] = null;
-                }
-            }
-        }
-        return gameBoard;
-    }
 }
