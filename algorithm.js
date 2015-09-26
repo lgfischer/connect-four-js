@@ -16,7 +16,7 @@ function Algorithm() {
 
     var gameBoard = null;
 
-    var maxLevel = 5;
+    var maxLevel = 4;
 
     /*
      * Cada chamada de 'move' corresponde a uma peça jogada.
@@ -355,7 +355,7 @@ function Algorithm() {
         for( r=rows-1; r>=0; r-- ) {
             for( c=0; c<columns; c++ ) {
 
-                if( this.isPlayerAt(c, r, currentPlayer) ) {
+                if( true ) {
                     //cons ole.log('player at '+c.toString()+r.toString());
                     var count;
 
@@ -372,13 +372,16 @@ function Algorithm() {
                         }
                     }
                     //cons ole.log('playerCount:'+playerCount+' oppontCount:'+oppontCount);
-                    if( playerCount>0 && oppontCount==0 ) {
+                    if( count==4 && playerCount>0 && oppontCount==0 ) {
                         if( playerCount==2 ) {
                             score+=3;
                         }
                         if( playerCount==3 ) {
                             score+=8;
                         }
+                    }
+                    else if( count==4 && oppontCount>0 ) {
+                        score -= oppontCount;
                     }
 
 
@@ -395,13 +398,16 @@ function Algorithm() {
                         }
                     }
                     //cons ole.log('playerCount:'+playerCount+' oppontCount:'+oppontCount);
-                    if( playerCount>0 && oppontCount==0 ) {
+                    if( count==4 && playerCount>0 && oppontCount==0 ) {
                         if( playerCount==2 ) {
                             score+=3;
                         }
                         if( playerCount==3 ) {
                             score+=8;
                         }
+                    }
+                    else if( count==4 && oppontCount>0 ) {
+                        score -= oppontCount;
                     }
 
                     // diagonal direita
@@ -415,13 +421,16 @@ function Algorithm() {
                             oppontCount++
                         }
                     }
-                    if( playerCount>0 && oppontCount==0 ) {
+                    if( count==4 && playerCount>0 && oppontCount==0 ) {
                         if( playerCount==2 ) {
                             score+=3;
                         }
                         if( playerCount==3 ) {
                             score+=8;
                         }
+                    }
+                    else if( count==4 && oppontCount>0 ) {
+                        score -= oppontCount;
                     }
 
                     // diagonal esquerda
@@ -435,13 +444,16 @@ function Algorithm() {
                             oppontCount++
                         }
                     }
-                    if( playerCount>0 && oppontCount==0 ) {
+                    if( count==4 && playerCount>0 && oppontCount==0 ) {
                         if( playerCount==2 ) {
                             score+=3;
                         }
                         if( playerCount==3 ) {
                             score+=8;
                         }
+                    }
+                    else if( count==4 && oppontCount>0 ) {
+                        score -= oppontCount;
                     }
                 }
             }
