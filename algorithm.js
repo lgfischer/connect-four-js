@@ -349,7 +349,66 @@ function Algorithm() {
         }
     };
 
-    this.getGameScore = function(currentPlayer) {
+    this.evaluatePlaces = function(places, isCurrentPlayer) {
+        if( places.length!=4 && places.length!=5 ) {
+            return 0
+        }
+        var nullCount = 0;
+        var playerCount = 0;
+        var opponentCount = 0;
+        for(var i=0; i<places.length; i++) {
+            if( places[i]==null ) {
+                nullCount++;
+            }
+            else if( places[i]==this.player ) {
+                if( isCurrentPlayer ) {
+                    playerCount++;
+                }
+                else {
+                    opponentCount++;
+                }
+            }
+            else {
+                if( isCurrentPlayer ) {
+                    opponentCount++;
+                }
+                else {
+                    playerCount++
+                }
+            }
+        }
+        //cons ole.log( 'nulls:'+nullCount+' player:'+playerCount+' opponent:'+opponentCount );
+        // special cases
+        if( places.length==5 && opponentCount!=0 ) {
+            // | |P|P|P| |
+            if( playerCount==3 && places[1]!=null && places[2]!=null && places[3]!=null ) {
+                return 40;
+            }
+
+            // | |P| |P| |
+            if( playerCount==2 && places[1]!=null && places[3]!=null ) {
+                return 30;
+            }
+        }
+
+        if( opponentCount!=0 ) {
+            return 0;
+        }
+        else {
+            if( playerCount==1 ) {
+                return 1;
+            }
+            if( playerCount==2 ) {
+                return 4;
+            }
+            if( playerCount==3 ) {
+                return 8;
+            }
+            return playerCount;
+        }
+    };
+
+    this.getGameScore = function(isCurrentPlayer) {
         var score = 0;
         var r, c;
         for( r=rows-1; r>=0; r-- ) {
@@ -357,104 +416,36 @@ function Algorithm() {
 
                 if( true ) {
                     //cons ole.log('player at '+c.toString()+r.toString());
-                    var count;
 
                     // vertical
-                    var playerCount=0;
-                    var oppontCount=0;
+                    var count;
+                    var places = [];
                     for( count=0; count<4 && (r-count)>=0; count++ ) {
-                        if( this.isPlayerAt(c, r-count, currentPlayer) ) {
-                            //cons ole.log('++'+c.toString()+(r-count).toString());
-                            playerCount++;
-                        }
-                        else if( this.isPlayerAt(c, r-count, !currentPlayer) ) {
-                            oppontCount++
-                        }
+                        places.push( this.getPlace(c, r-count) );
                     }
-                    //cons ole.log('playerCount:'+playerCount+' oppontCount:'+oppontCount);
-                    if( count==4 && playerCount>0 && oppontCount==0 ) {
-                        if( playerCount==2 ) {
-                            score+=3;
-                        }
-                        if( playerCount==3 ) {
-                            score+=8;
-                        }
-                    }
-                    else if( count==4 && oppontCount>0 ) {
-                        score -= oppontCount;
-                    }
+                    score += this.evaluatePlaces(places, isCurrentPlayer);
 
 
                     // horizontal
-                    var playerCount=0;
-                    var oppontCount=0;
-                    for( count=0; count<4 && (c+count)<columns; count++ ) {
-                        if( this.isPlayerAt(c+count, r, currentPlayer) ) {
-                            //cons ole.log('++'+(c+count).toString()+r.toString());
-                            playerCount++;
-                        }
-                        else if( this.isPlayerAt(c+count, r, !currentPlayer) ) {
-                            oppontCount++
-                        }
+                    var places = [];
+                    for( count=0; count<5 && (c+count)<columns; count++ ) { // 5 de proposito!
+                        places.push( this.getPlace(c+count, r) );
                     }
-                    //cons ole.log('playerCount:'+playerCount+' oppontCount:'+oppontCount);
-                    if( count==4 && playerCount>0 && oppontCount==0 ) {
-                        if( playerCount==2 ) {
-                            score+=3;
-                        }
-                        if( playerCount==3 ) {
-                            score+=8;
-                        }
-                    }
-                    else if( count==4 && oppontCount>0 ) {
-                        score -= oppontCount;
-                    }
+                    score += this.evaluatePlaces(places, isCurrentPlayer);
+
 
                     // diagonal direita
-                    var playerCount=0;
-                    var oppontCount=0;
                     for( count=0; count<4 && (r-count)>=0 && (c+count)<columns; count++ ) {
-                        if( this.isPlayerAt(c+count, r-count, currentPlayer) ) {
-                            playerCount++;
-                        }
-                        else if( this.isPlayerAt(c+count, r-count, !currentPlayer) ) {
-                            oppontCount++
-                        }
+                        places.push( this.getPlace(c+count, r-count) );
                     }
-                    if( count==4 && playerCount>0 && oppontCount==0 ) {
-                        if( playerCount==2 ) {
-                            score+=3;
-                        }
-                        if( playerCount==3 ) {
-                            score+=8;
-                        }
-                    }
-                    else if( count==4 && oppontCount>0 ) {
-                        score -= oppontCount;
-                    }
+                    score += this.evaluatePlaces(places, isCurrentPlayer);
+
 
                     // diagonal esquerda
-                    var playerCount=0;
-                    var oppontCount=0;
                     for( count=0; count<4 && (r-count)<rows && (c-count)>=0; count++ ) {
-                        if( this.isPlayerAt(c-count, r-count, currentPlayer) ) {
-                            playerCount++;
-                        }
-                        else if( this.isPlayerAt(c-count, r-count, !currentPlayer) ) {
-                            oppontCount++
-                        }
+                        places.push( this.getPlace(c-count, r-count) );
                     }
-                    if( count==4 && playerCount>0 && oppontCount==0 ) {
-                        if( playerCount==2 ) {
-                            score+=3;
-                        }
-                        if( playerCount==3 ) {
-                            score+=8;
-                        }
-                    }
-                    else if( count==4 && oppontCount>0 ) {
-                        score -= oppontCount;
-                    }
+                    score += this.evaluatePlaces(places, isCurrentPlayer);
                 }
             }
         }

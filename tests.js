@@ -352,12 +352,12 @@ QUnit.test( "minmax 3", function( assert ) {
     var alg = new Algorithm()
     alg.player = 'P';
     alg.gameBoard = alg.parseGameBoard([
+        '| | | | | | | |',
+        '|O| | | | | | |',
         '|P| | | | | | |',
-        '|P| | |P| | | |',
-        '|O| |P|O| | | |',
-        '|P|O|O|O| | | |',
-        '|P|P|O|O|O| | |',
-        '|P|P|O|P|O| | |',
+        '|P| | | | | | |',
+        '|P|O| | | | | |',
+        '|O|O| |P| | | |',
     ]);
     alg.logGame();
 
@@ -366,7 +366,6 @@ QUnit.test( "minmax 3", function( assert ) {
     alg.logGame();
     equal( alg.getPlace(4,3), 'P' );
 });
-
 
 
 
@@ -397,7 +396,20 @@ QUnit.test( "gamescore 1", function( assert ) {
     //alg.logGame();
     var score2 = alg.getGameScore(true);
 
-    //console.log('score1:'+score1+' score2:'+score2);
+    console.log('score1:'+score1+' score2:'+score2);
     equal(score1>score2, true);
 });
 
+
+
+
+
+
+
+QUnit.test( "evaluate places", function( assert ) {
+    console.log( "evaluate places" );
+    var alg = new Algorithm()
+    alg.player = 'P';
+    alg.evaluatePlaces([null, 'P', 'O', 'P'], true);
+    alg.evaluatePlaces([null, 'P', 'O', 'P'], false);
+});
