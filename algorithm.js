@@ -220,10 +220,13 @@ function Algorithm() {
      * (player) e oponente por 'O'. Isso facilita a leitura
      * durante o debugging.
      */
-    this.getGameBoardAsString = function() {
+    this.getGameBoardAsString = function(dontAddTitle) {
         var playerId = 'P';
         var opponentId = 'O';
-        var rowsStrings = ['gameBoard'];
+        var rowsStrings = [];
+        if( !dontAddTitle ) {
+            rowsStrings.push('gameBoard')
+        };
         for( var r=0; r<rows; r++ ) {
             var row = [];
             for(var c=0; c<columns; c++ ) {
@@ -256,7 +259,7 @@ function Algorithm() {
             }
         }
         for(c=0; c<columns; c++) {
-            for(r=0; r<rows; r++) {
+            for(r=0; r<rows && r<theRows.length; r++) {
                 var pos = theRows[r].replace(/\|/g, "").charAt(c);
                 if( pos != ' ' ) {
                     gameBoard[c][r] = pos;
@@ -264,6 +267,18 @@ function Algorithm() {
                 else {
                     gameBoard[c][r] = null;
                 }
+            }
+        }
+        return gameBoard;
+    };
+
+    this.getNewGameBoard = function() {
+        var c, r;
+        var gameBoard = [];
+        for(c=0; c<columns; c++) {
+            gameBoard.push([]);
+            for(r=0; r<rows; r++) {
+                gameBoard[c].push(null);
             }
         }
         return gameBoard;

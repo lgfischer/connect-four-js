@@ -171,6 +171,15 @@ QUnit.test( "victory diagonal direita", function( assert ) {
         '|P| | | | | | |',
     ]);
     equal( alg.isVictory(true), true );
+    alg.gameBoard = alg.parseGameBoard([
+        '| | | | | | | |',
+        '| | | | | | | |',
+        '|O| | | | |P| |',
+        '|P| | | |P|O|O|',
+        '|P| |P|P|O|O|O|',
+        '|P| |P|O|O|O|P|',
+    ]);
+    equal( alg.isVictory(true), true );
 
     alg.gameBoard = alg.parseGameBoard([
         '| | | | | | | |',
@@ -324,17 +333,17 @@ QUnit.test( "minmax 2", function( assert ) {
     alg.gameBoard = alg.parseGameBoard([
         '|O|O|O| | | | |',
         '|P|P|P| | | | |',
-        '|O|P|O|P| | | |',
+        '|O|P|O| | | | |',
         '|P|O|O|O| | | |',
-        '|O|P|P|P| | | |',
-        '|P|P|O|O| | | |',
+        '|O|P|P|P|O| | |',
+        '|P|P|O|O|P| | |',
     ]);
     alg.logGame();
 
     var move = alg.move( alg.getAvailableMoves(), alg.gameBoard );
     alg.doMove(move, alg.player);
     alg.logGame();
-    //equal( alg.getPlace(3,4), 'P' );
+    equal( alg.getPlace(3,1), null );
 });
 
 
