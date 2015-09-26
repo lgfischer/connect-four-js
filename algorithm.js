@@ -7,13 +7,13 @@
  */
 
 function Algorithm() {
-    
+
     this.player = 'lgfischer';
     this.otherPlayer = null;
 
     var rows = 6;
     var columns = 7;
-    
+
     var gameBoard = null;
 
     var maxLevel = 4;
@@ -86,15 +86,15 @@ function Algorithm() {
         //cons ole.log('isPlayerAt:'+column.toString()+row.toString()+'='+place+this.player+currentPlayer+((place==this.player)==currentPlayer));
         return place!=null && (place==this.player)==currentPlayer;
     };
-    
+
     /**
-     * Retorna o jogador que está ocupando a linha/coluna indicados, ou null se 
+     * Retorna o jogador que está ocupando a linha/coluna indicados, ou null se
      * a casa estiver vazia
      */
     this.getPlace = function(column, row) {
         return this.gameBoard[column][row];
     };
-    
+
     /**
      * Preenche a linha/coluna indicados com o nome do jogador informado.
      * Se player for null, remove qualquer peça da casa.
@@ -193,7 +193,7 @@ function Algorithm() {
 
     /**
      * Retorna o nome do oponente da partida (aquele cujo nome
-     * é diferente do especificado em this.player). 
+     * é diferente do especificado em this.player).
      */
     this.getOtherPlayer = function(player) {
         for( var r=0; r<rows; r++ ) {
@@ -208,16 +208,16 @@ function Algorithm() {
     };
 
     /**
-     * Imprime o gameBoard atual no console do navegador.
+     * Imprime o gameBoard atual no //cons ole do navegador.
      */
     this.logGame = function() {
-        console.log( this.getGameBoardAsString() );
+        //cons ole.log( this.getGameBoardAsString() );
     };
 
     /**
      * Retorna o gameboard atual em um formato string legivel.
      * Nota: o nome do jogador corrente será substituido por 'P'
-     * (player) e oponente por 'O'. Isso facilita a leitura 
+     * (player) e oponente por 'O'. Isso facilita a leitura
      * durante o debugging.
      */
     this.getGameBoardAsString = function() {
@@ -280,12 +280,13 @@ function Algorithm() {
       * Details here: https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
       */
     this.minmaxWithAlphaBetaPruning = function(availableMoves, currentPlayer, level, min, max) {
-        //cons ole.log( "minmaxWithAlphaBetaPruning: level:"+level+" availableMoves:"+availableMoves + " min:"+min+' max:'+max );
-        this.logGame();
+        //cons ole.log( "minmax: level:"+level+" availableMoves:"+availableMoves + " min:"+min+' max:'+max );
+        //this.logGame();
 
         if(availableMoves.length==0 || level<=0 || this.isVictory(currentPlayer) ) {
-            //cons ole.log("returning current score");
-            return {score:this.gameScore(currentPlayer), move:null};
+            var score = this.gameScore(currentPlayer, level);
+            //cons ole.log("returning score: "+score);
+            return {score:score, move:null};
         }
         var best = {score:Number.NEGATIVE_INFINITY, move:null};
         for( var i=0; i<availableMoves.length; i++ ) {
@@ -295,6 +296,7 @@ function Algorithm() {
                 min = best.score;
             }
             this.doMove( currentMove, currentPlayer? this.player : this.otherPlayer );
+
             var theMove = this.minmaxWithAlphaBetaPruning(this.getAvailableMoves(), !currentPlayer, level-1, -max, -min);
             theMove = {score:-theMove.score, move:theMove.move};
 
@@ -311,24 +313,24 @@ function Algorithm() {
             }
         }
         //cons ole.log('returning bestscore:'+best.score+" best move:"+best.move);
-        this.logGame();
+        //this.logGame();
         return best
     };
 
     /**
      * The function that computes the gamescore for the current gameboard
      */
-    this.gameScore = function(currentPlayer) {
+    this.gameScore = function(currentPlayer, level) {
         if( this.isVictory(currentPlayer) ) {
             if( currentPlayer ) {
-                return 100;
+                return 10000;
             }
             else {
-                return 200;
+                return 20000;
             }
         }
         else {
-            return this.getGameScore(currentPlayer);
+            return this.getGameScore(currentPlayer)*level;
         }
     };
 
@@ -339,67 +341,87 @@ function Algorithm() {
             for( c=0; c<columns; c++ ) {
 
                 if( this.isPlayerAt(c, r, currentPlayer) ) {
-                    // vertical
-                    var isWin = true;
                     var count;
-                    for( count=0; count<4 && (r-count)>=0 && isWin; count++ ) {
-                        //cons ole.log('wining '+c.toString()+r.toString()+'='+this.getPlace(c, r));
-                        isWin = this.isPlayerAt(c, r-count, currentPlayer);
+
+                    // vertical
+                    var playerCount=0;
+                    var oppontCount=0;
+                    for( count=0; count<4 && (r-count)>=0; count++ ) {
+                        if( this.isPlayerAt(c, r-count, currentPlayer) ) {
+                            playerCount++;
+                        }
+                        else {
+                            oppontCount++
+                        }
                     }
-                    if( count==1 ) {
-                        score+=2;
-                    }
-                    if( count==2 ) {
-                        score+=4;
-                    }
-                    if( count==3 ) {
-                        score+=8;
+                    if( playerCount>0 && oppontCount==0 ) {
+                        if( playerCount==2 ) {
+                            score+=3;
+                        }
+                        if( playerCount==3 ) {
+                            score+=8;
+                        }
                     }
 
+
                     // horizontal
-                    isWin = true;
-                    for( count=0; count<4 && (c+count)<columns && isWin; count++ ) {
-                        isWin = this.isPlayerAt(c+count, r, currentPlayer);
+                    var playerCount=0;
+                    var oppontCount=0;
+                    for( count=0; count<4 && (c+count)<columns; count++ ) {
+                        if( this.isPlayerAt(c+count, r, currentPlayer) ) {
+                            playerCount++;
+                        }
+                        else {
+                            oppontCount++
+                        }
                     }
-                    if( count==1 ) {
-                        score+=2;
-                    }
-                    if( count==2 ) {
-                        score+=4;
-                    }
-                    if( count==3 ) {
-                        score+=8;
+                    if( playerCount>0 && oppontCount==0 ) {
+                        if( playerCount==2 ) {
+                            score+=3;
+                        }
+                        if( playerCount==3 ) {
+                            score+=8;
+                        }
                     }
 
                     // diagonal direita
-                    isWin = true;
-                    for( count=0; count<4 && (r-count)>=0 && (c+count)<columns && isWin; count++ ) {
-                        //cons ole.log('wining '+(c+count).toString()+(r-count).toString()+'='+this.getPlace(c+count, r-count));
-                        isWin = this.isPlayerAt(c+count, r-count, currentPlayer);
+                    var playerCount=0;
+                    var oppontCount=0;
+                    for( count=0; count<4 && (r-count)>=0 && (c+count)<columns; count++ ) {
+                        if( this.isPlayerAt(c+count, r-count, currentPlayer) ) {
+                            playerCount++;
+                        }
+                        else {
+                            oppontCount++
+                        }
                     }
-                    if( count==1 ) {
-                        score+=2;
-                    }
-                    if( count==2 ) {
-                        score+=4;
-                    }
-                    if( count==3 ) {
-                        score+=8;
+                    if( playerCount>0 && oppontCount==0 ) {
+                        if( playerCount==2 ) {
+                            score+=3;
+                        }
+                        if( playerCount==3 ) {
+                            score+=8;
+                        }
                     }
 
                     // diagonal esquerda
-                    isWin = true;
-                    for( count=0; count<4 && (r-count)<rows && (c-count)>=0 && isWin; count++ ) {
-                        isWin = this.isPlayerAt(c-count, r-count, currentPlayer);
+                    var playerCount=0;
+                    var oppontCount=0;
+                    for( count=0; count<4 && (r-count)<rows && (c-count)>=0; count++ ) {
+                        if( this.isPlayerAt(c-count, r-count, currentPlayer) ) {
+                            playerCount++;
+                        }
+                        else {
+                            oppontCount++
+                        }
                     }
-                    if( count==1 ) {
-                        score+=2;
-                    }
-                    if( count==2 ) {
-                        score+=4;
-                    }
-                    if( count==3 ) {
-                        score+=8;
+                    if( playerCount>0 && oppontCount==0 ) {
+                        if( playerCount==2 ) {
+                            score+=3;
+                        }
+                        if( playerCount==3 ) {
+                            score+=8;
+                        }
                     }
                 }
             }
