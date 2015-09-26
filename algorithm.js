@@ -355,7 +355,7 @@ function Algorithm() {
         for( r=rows-1; r>=0; r-- ) {
             for( c=0; c<columns; c++ ) {
 
-                if( true/*this.isPlayerAt(c, r, currentPlayer)*/ ) {
+                if( this.isPlayerAt(c, r, currentPlayer) ) {
                     //cons ole.log('player at '+c.toString()+r.toString());
                     var count;
 

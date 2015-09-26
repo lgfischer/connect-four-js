@@ -347,6 +347,30 @@ QUnit.test( "minmax 2", function( assert ) {
 });
 
 
+QUnit.test( "minmax 3", function( assert ) {
+    console.log( "minmax 3" );
+    var alg = new Algorithm()
+    alg.player = 'P';
+    alg.gameBoard = alg.parseGameBoard([
+        '|P| | | | | | |',
+        '|P| | |P| | | |',
+        '|O| |P|O| | | |',
+        '|P|O|O|O| | | |',
+        '|P|P|O|O|O| | |',
+        '|P|P|O|P|O| | |',
+    ]);
+    alg.logGame();
+
+    var move = alg.move( alg.getAvailableMoves(), alg.gameBoard );
+    alg.doMove(move, alg.player);
+    alg.logGame();
+    equal( alg.getPlace(4,3), 'P' );
+});
+
+
+
+
+
 QUnit.test( "gamescore 1", function( assert ) {
     console.log( "minmax 2" );
     var alg = new Algorithm()
