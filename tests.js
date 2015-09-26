@@ -322,12 +322,12 @@ QUnit.test( "minmax 2", function( assert ) {
     var alg = new Algorithm()
     alg.player = 'P';
     alg.gameBoard = alg.parseGameBoard([
-        '| | | | | | | |',
-        '| | | | | | | |',
-        '| | | | | | | |',
-        '| | | | | | | |',
-        '| | | |O| | | |',
-        '|P| | |P| | |O|',
+        '|O|O|O| | | | |',
+        '|P|P|P| | | | |',
+        '|O|P|O|P| | | |',
+        '|P|O|O|O| | | |',
+        '|O|P|P|P| | | |',
+        '|P|P|O|O| | | |',
     ]);
     alg.logGame();
 
@@ -336,3 +336,35 @@ QUnit.test( "minmax 2", function( assert ) {
     alg.logGame();
     //equal( alg.getPlace(3,4), 'P' );
 });
+
+
+QUnit.test( "gamescore 1", function( assert ) {
+    console.log( "minmax 2" );
+    var alg = new Algorithm()
+    alg.player = 'P';
+    alg.gameBoard = alg.parseGameBoard([
+        '| | | | | | | |',
+        '| | | | | | | |',
+        '| | | | | | | |',
+        '| | | | | | | |',
+        '| | | | | | | |',
+        '|P|P| |P| | | |',
+    ]);
+    //alg.logGame();
+    var score1 = alg.getGameScore(true);
+
+    alg.gameBoard = alg.parseGameBoard([
+        '| | | | | | | |',
+        '| | | | | | | |',
+        '| | | | | | | |',
+        '| | | | | | | |',
+        '|P| | | | | | |',
+        '|P| | |P| | | |',
+    ]);
+    //alg.logGame();
+    var score2 = alg.getGameScore(true);
+
+    //console.log('score1:'+score1+' score2:'+score2);
+    equal(score1>score2, true);
+});
+

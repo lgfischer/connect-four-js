@@ -16,7 +16,7 @@ function Algorithm() {
 
     var gameBoard = null;
 
-    var maxLevel = 4;
+    var maxLevel = 5;
 
     /*
      * Cada chamada de 'move' corresponde a uma peça jogada.
@@ -341,6 +341,7 @@ function Algorithm() {
             for( c=0; c<columns; c++ ) {
 
                 if( this.isPlayerAt(c, r, currentPlayer) ) {
+                    //cons ole.log('player at '+c.toString()+r.toString());
                     var count;
 
                     // vertical
@@ -348,12 +349,14 @@ function Algorithm() {
                     var oppontCount=0;
                     for( count=0; count<4 && (r-count)>=0; count++ ) {
                         if( this.isPlayerAt(c, r-count, currentPlayer) ) {
+                            //cons ole.log('++'+c.toString()+(r-count).toString());
                             playerCount++;
                         }
-                        else {
+                        else if( this.isPlayerAt(c, r-count, !currentPlayer) ) {
                             oppontCount++
                         }
                     }
+                    //cons ole.log('playerCount:'+playerCount+' oppontCount:'+oppontCount);
                     if( playerCount>0 && oppontCount==0 ) {
                         if( playerCount==2 ) {
                             score+=3;
@@ -369,12 +372,14 @@ function Algorithm() {
                     var oppontCount=0;
                     for( count=0; count<4 && (c+count)<columns; count++ ) {
                         if( this.isPlayerAt(c+count, r, currentPlayer) ) {
+                            //cons ole.log('++'+(c+count).toString()+r.toString());
                             playerCount++;
                         }
-                        else {
+                        else if( this.isPlayerAt(c+count, r, !currentPlayer) ) {
                             oppontCount++
                         }
                     }
+                    //cons ole.log('playerCount:'+playerCount+' oppontCount:'+oppontCount);
                     if( playerCount>0 && oppontCount==0 ) {
                         if( playerCount==2 ) {
                             score+=3;
@@ -391,7 +396,7 @@ function Algorithm() {
                         if( this.isPlayerAt(c+count, r-count, currentPlayer) ) {
                             playerCount++;
                         }
-                        else {
+                        else if( this.isPlayerAt(c+count, r-count, !currentPlayer) ) {
                             oppontCount++
                         }
                     }
@@ -411,7 +416,7 @@ function Algorithm() {
                         if( this.isPlayerAt(c-count, r-count, currentPlayer) ) {
                             playerCount++;
                         }
-                        else {
+                        else if( this.isPlayerAt(c-count, r-count, !currentPlayer) ) {
                             oppontCount++
                         }
                     }
