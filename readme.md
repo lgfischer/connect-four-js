@@ -1,5 +1,5 @@
-Lig4 AI
-=======
+Connect Four AI
+===============
 
 Artificial Intelligence for the Connect Four game in JavaScript
 
