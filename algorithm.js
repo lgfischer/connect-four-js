@@ -1,4 +1,3 @@
-
 'use strict';
 
 /*
@@ -272,6 +271,9 @@ function Algorithm() {
         return gameBoard;
     };
 
+    /**
+     * Retorna um novo gameboard vazio, sem peças.
+     */
     this.getNewGameBoard = function() {
         var c, r;
         var gameBoard = [];
