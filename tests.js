@@ -347,28 +347,6 @@ QUnit.test( "minmax 2", function( assert ) {
 });
 
 
-QUnit.test( "minmax 3", function( assert ) {
-    console.log( "minmax 3" );
-    var alg = new Algorithm()
-    alg.player = 'P';
-    alg.gameBoard = alg.parseGameBoard([
-        '| | | | | | | |',
-        '|O| | | | | | |',
-        '|P| | | | | | |',
-        '|P| | | | | | |',
-        '|P|O| | | | | |',
-        '|O|O| |P| | | |',
-    ]);
-    alg.logGame();
-
-    var move = alg.move( alg.getAvailableMoves(), alg.gameBoard );
-    alg.doMove(move, alg.player);
-    alg.logGame();
-    equal( alg.getPlace(4,3), 'P' );
-});
-
-
-
 
 QUnit.test( "gamescore 1", function( assert ) {
     console.log( "minmax 2" );
@@ -398,18 +376,4 @@ QUnit.test( "gamescore 1", function( assert ) {
 
     console.log('score1:'+score1+' score2:'+score2);
     equal(score1>score2, true);
-});
-
-
-
-
-
-
-
-QUnit.test( "evaluate places", function( assert ) {
-    console.log( "evaluate places" );
-    var alg = new Algorithm()
-    alg.player = 'P';
-    alg.evaluatePlaces([null, 'P', 'O', 'P'], true);
-    alg.evaluatePlaces([null, 'P', 'O', 'P'], false);
 });
