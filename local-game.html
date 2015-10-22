@@ -9,9 +9,12 @@
     <button id="player">Algorithm starts (P)</button>
     <button id="oponent">Human starts (O)</button>
     </p>
-    <p><input type="text" id="column"/></p>
-    <textarea id="output" rows="7" cols="15"></textarea>
-    <div id="log" style="max-height: 440px;overflow-y: scroll;"></div>
+    <p>Your move: <input type="text" id="column"/></p>
+    <div>Gameboard:<br/>
+    <textarea id="output" rows="10" cols="15"></textarea>
+    </div>
+    <p>Game log:</p>
+    <textarea readonly="true" id="log"  rows="7" cols="30">Please start a new game</textarea readonly="true">
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="algorithm.js"></script>
     <script src="local.js"></script>

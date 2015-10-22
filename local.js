@@ -1,5 +1,6 @@
 function log(player, move) {
-    $('#log').prepend('<p>'+player+' move was '+move+'</p>');
+    var log = $('#log');
+    log.val((log.val()+'\n'+player+' move was '+move).trim());
 }
 
 $('#player').click(function(){
