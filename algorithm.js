@@ -324,12 +324,12 @@ function Algorithm() {
             }
             if(best.score > max) {
                 //cons ole.log('break');
-                break
+                break;
             }
         }
         //cons ole.log('returning bestscore:'+best.score+" best move:"+best.move);
         //this.logGame();
-        return best
+        return best;
     };
 
     /**
@@ -345,7 +345,7 @@ function Algorithm() {
             }
         }
         else {
-            return this.getGameScore(currentPlayer)*level;
+            return this.getGameScore(currentPlayer);
         }
     };
 
@@ -384,7 +384,22 @@ function Algorithm() {
             if( playerCount==3 && places[1]!=null && places[2]!=null && places[3]!=null ) {
                 return 40;
             }
-
+            // |P|P| |P| |
+            if( playerCount==3 && places[0]!=null && places[1]!=null && places[3]!=null ) {
+                return 30;
+            }
+            // | |P|P| |P|
+            if( playerCount==3 && places[1]!=null && places[2]!=null && places[4]!=null ) {
+                return 30;
+            }
+            // |P| |P|P| |
+            if( playerCount==3 && places[0]!=null && places[2]!=null && places[3]!=null ) {
+                return 30;
+            }
+            // | |P| |P|P|
+            if( playerCount==3 && places[1]!=null && places[3]!=null && places[4]!=null ) {
+                return 30;
+            }
             // | |P| |P| |
             if( playerCount==2 && places[1]!=null && places[3]!=null ) {
                 return 30;
